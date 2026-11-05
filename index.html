@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>دفترچه یادداشت کارها</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="یادداشت">
+
+  <style>
+    /* ---------- فونت وزیرمتن از CDN ---------- */
+    @font-face {
+      font-family: 'Vazirmatn';
+      src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Vazirmatn';
+      src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Medium.woff2') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Vazirmatn';
+      src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-SemiBold.woff2') format('woff2');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Vazirmatn';
+      src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Vazirmatn';
+      src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-ExtraBold.woff2') format('woff2');
+      font-weight: 800;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* ---------- استایل‌ها ---------- */
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Vazirmatn, Tahoma, Arial, sans-serif;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.6;
+      background: linear-gradient(135deg, #eef2ff, #f8fafc);
+      min-height: 100vh;
+      color: #1e293b;
+      padding: 24px 12px;
+    }
+
+    .app {
+      max-width: 760px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(15, 23, 42, 0.12);
+      padding: 24px;
+    }
+
+    h1 {
+      margin: 0 0 20px;
+      font-size: 1.85rem;
+      font-weight: 800;
+      text-align: center;
+      color: #312e81;
+      letter-spacing: -0.3px;
+    }
+
+    #installBtn {
+      width: 100%;
+      margin-bottom: 16px;
+      padding: 14px;
+      background: #10b981;
+      color: #ffffff;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    #installBtn:hover { opacity: 0.9; }
+
+    form { display: flex; gap: 10px; margin-bottom: 18px; }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 14px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: #1e293b;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus { border-color: #6366f1; }
+    input[type="text"]::placeholder { font-weight: 400; color: #94a3b8; }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    button:hover { opacity: 0.9; }
+    button:active { transform: scale(0.98); }
+
+    .add-btn { background: #4f46e5; color: #ffffff; font-weight: 800; }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    li {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    li.done .text {
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+
+    .task-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .task-main input[type="checkbox"] {
+      width: 24px;
+      height: 24px;
+      accent-color: #4f46e5;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .text {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.55;
+      word-break: break-word;
+    }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .record      { background: #dcfce7; color: #166534; }
+    .stop        { background: #fee2e2; color: #991b1b; }
+    .play        { background: #dbeafe; color: #1e40af; }
+    .delete-audio{ background: #fef3c7; color: #92400e; }
+    .delete      { background: #f1f5f9; color: #475569; }
+
+    .status {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #dc2626;
+    }
+
+    .empty {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 1.05rem;
+      font-weight: 500;
+      padding: 20px 0;
+      display: none;
+    }
+
+    @media (max-width: 500px) {
+      body { font-size: 17px; padding: 16px 10px; }
+      h1 { font-size: 1.6rem; }
+      form { flex-direction: column; }
+      .add-btn { width: 100%; }
+      .text { font-size: 1.05rem; }
+      button { padding: 12px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>📒 دفترچه یادداشت کارها</h1>
+
+    <button id="installBtn" hidden>📲 نصب روی دستگاه</button>
+
+    <form id="taskForm">
+      <input id="taskInput" type="text" placeholder="یک کار جدید بنویسید..." autocomplete="off" required />
+      <button class="add-btn" type="submit">افزودن کار</button>
+    </form>
+
+    <ul id="taskList"></ul>
+    <p class="empty" id="empty">هنوز کاری اضافه نشده است.</p>
+  </div>
+
+  <script>
+    const taskForm = document.getElementById('taskForm');
+    const taskInput = document.getElementById('taskInput');
+    const taskList = document.getElementById('taskList');
+    const empty = document.getElementById('empty');
+
+    const STORAGE_KEY = 'task_notebook_tasks_v1';
+    const DB_NAME = 'voiceNotesDB';
+    const STORE_NAME = 'audios';
+
+    let tasks = [];
+    let mediaRecorder = null;
+    let chunks = [];
+    let currentRecordingTaskId = null;
+    let currentStream = null;
+
+    // ---------- IndexedDB ----------
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+        request.onupgradeneeded = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.createObjectStore(STORE_NAME);
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function putAudio(id, blob) {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        tx.objectStore(STORE_NAME).put(blob, id);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+
+    async function getAudio(id) {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const request = tx.objectStore(STORE_NAME).get(id);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function deleteAudio(id) {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        tx.objectStore(STORE_NAME).delete(id);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+
+    // ---------- localStorage ----------
+    function loadTasks() {
+      try {
+        tasks = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch {
+        tasks = [];
+      }
+    }
+
+    function saveTasks() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    }
+
+    function makeId() {
+      if (crypto.randomUUID) return crypto.randomUUID();
+      return Date.now().toString(36) + Math.random().toString(36).slice(2);
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, ch => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[ch]));
+    }
+
+    // ---------- render ----------
+    function render() {
+      empty.style.display = tasks.length ? 'none' : 'block';
+
+      taskList.innerHTML = tasks.map(task => {
+        const isRecording = currentRecordingTaskId === task.id;
+
+        return `
+          <li class="${task.done ? 'done' : ''}" data-id="${task.id}">
+            <label class="task-main">
+              <input type="checkbox" ${task.done ? 'checked' : ''} />
+              <span class="text">${escapeHtml(task.text)}</span>
+            </label>
+
+            <div class="actions">
+              ${
+                isRecording
+                  ? `<button class="stop" type="button">⏹ توقف ضبط</button>`
+                  : `<button class="record" type="button">🎙️ ضبط صدا</button>`
+              }
+
+              ${
+                task.hasAudio
+                  ? `
+                    <button class="play" type="button">▶️ پخش صدا</button>
+                    <button class="delete-audio" type="button">🗑 حذف صدا</button>
+                  `
+                  : ''
+              }
+
+              <button class="delete" type="button">حذف کار</button>
+            </div>
+
+            ${isRecording ? '<span class="status">در حال ضبط...</span>' : ''}
+          </li>
+        `;
+      }).join('');
+    }
+
+    // ---------- افزودن ----------
+    taskForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const text = taskInput.value.trim();
+      if (!text) return;
+
+      tasks.unshift({
+        id: makeId(),
+        text,
+        done: false,
+        hasAudio: false
+      });
+
+      taskInput.value = '';
+      saveTasks();
+      render();
+    });
+
+    // ---------- checkbox ----------
+    taskList.addEventListener('change', event => {
+      if (!event.target.matches('input[type="checkbox"]')) return;
+      const li = event.target.closest('li');
+      const task = tasks.find(t => t.id === li.dataset.id);
+      if (!task) return;
+      task.done = event.target.checked;
+      saveTasks();
+      render();
+    });
+
+    // ---------- دکمه‌ها ----------
+    taskList.addEventListener('click', async event => {
+      const btn = event.target.closest('button');
+      if (!btn) return;
+
+      const li = btn.closest('li');
+      const id = li.dataset.id;
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+
+      if (btn.classList.contains('delete')) {
+        if (currentRecordingTaskId === id) {
+          alert('برای این کار در حال ضبط صدا هستید. اول ضبط را متوقف کنید.');
+          return;
+        }
+        if (confirm('این کار و صدای آن حذف شود؟')) {
+          try { await deleteAudio(id); } catch (e) { console.warn('حذف صدا ناموفق:', e); }
+          tasks = tasks.filter(t => t.id !== id);
+          saveTasks();
+          render();
+        }
+        return;
+      }
+
+      if (btn.classList.contains('record')) { await startRecording(id); return; }
+      if (btn.classList.contains('stop'))   { stopRecording(); return; }
+      if (btn.classList.contains('play'))   { await playAudio(id); return; }
+
+      if (btn.classList.contains('delete-audio')) {
+        if (confirm('صدای این کار حذف شود؟')) {
+          await deleteAudio(id);
+          task.hasAudio = false;
+          saveTasks();
+          render();
+        }
+        return;
+      }
+    });
+
+    // ---------- ضبط ----------
+    async function startRecording(id) {
+      if (currentRecordingTaskId) {
+        alert('یک ضبط دیگر در حال انجام است. اول آن را متوقف کنید.');
+        return;
+      }
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('مرورگر شما از ضبط صدا پشتیبانی نمی‌کند.');
+        return;
+      }
+
+      try {
+        currentStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+        // انتخاب فرمت مناسب (iOS فقط mp4)
+        const mimeType = MediaRecorder.isTypeSupported('audio/mp4')
+          ? 'audio/mp4'
+          : (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+              ? 'audio/webm;codecs=opus'
+              : '');
+
+        chunks = [];
+        mediaRecorder = mimeType
+          ? new MediaRecorder(currentStream, { mimeType })
+          : new MediaRecorder(currentStream);
+
+        currentRecordingTaskId = id;
+
+        mediaRecorder.ondataavailable = event => {
+          if (event.data && event.data.size > 0) chunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = async () => {
+          const taskId = currentRecordingTaskId;
+          const blob = new Blob(chunks, {
+            type: mediaRecorder.mimeType || 'audio/webm'
+          });
+
+          try {
+            if (blob.size > 0 && taskId) {
+              await putAudio(taskId, blob);
+              const task = tasks.find(t => t.id === taskId);
+              if (task) {
+                task.hasAudio = true;
+                saveTasks();
+              }
+            }
+          } catch (error) {
+            alert('ذخیره صدا ناموفق بود: ' + error.message);
+          }
+
+          if (currentStream) currentStream.getTracks().forEach(t => t.stop());
+
+          currentStream = null;
+          mediaRecorder = null;
+          chunks = [];
+          currentRecordingTaskId = null;
+          render();
+        };
+
+        mediaRecorder.start();
+        render();
+      } catch (error) {
+        alert('دسترسی به میکروفون ممکن نشد. اجازه دسترسی را بررسی کنید.');
+        console.error(error);
+      }
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+    }
+
+    // ---------- پخش ----------
+    async function playAudio(id) {
+      try {
+        const blob = await getAudio(id);
+        if (!blob) {
+          alert('صدایی برای این کار پیدا نشد.');
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        audio.onended = () => URL.revokeObjectURL(url);
+        audio.onerror = () => {
+          URL.revokeObjectURL(url);
+          alert('پخش صدا ناموفق بود.');
+        };
+        await audio.play();
+      } catch (error) {
+        alert('خطا در پخش صدا: ' + error.message);
+      }
+    }
+
+    // ---------- شروع ----------
+    loadTasks();
+    render();
+
+    // ---------- PWA: Service Worker ----------
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('SW registered:', reg.scope))
+          .catch(err => console.error('SW error:', err));
+      });
+    }
+
+    // ---------- PWA: دکمه نصب ----------
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('installBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.hidden = false;
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.hidden = true;
+    });
+
+    window.addEventListener('appinstalled', () => {
+      installBtn.hidden = true;
+      deferredPrompt = null;
+    });
+  </script>
+</body>
+  </html>
